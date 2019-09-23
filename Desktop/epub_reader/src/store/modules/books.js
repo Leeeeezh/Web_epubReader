@@ -1,10 +1,14 @@
 const book = {
   state: {
-    fileName: ''
+    fileName: '',
+    fontSize: 20
   },
   mutations: {
     'SET_FILENAME': (state, fileName) => {
       state.fileName = fileName
+    },
+    'SET_FONTSIZE': (state, fontSize) => {
+      state.fontSize = fontSize
     }
   },
   actions: {
@@ -12,10 +16,16 @@ const book = {
       commit
     }, fileName) => {
       return commit('SET_FILENAME', fileName)
+    },
+    setFontSize: ({
+      commit
+    },fontSize) => {
+      return commit('SET_FONTSIZE', fontSize)
     }
   },
   getters: {
-    fileName: state => state.fileName
+    fileName: state => state.fileName,
+    fontSize: state => state.fontSize
   }
 }
 

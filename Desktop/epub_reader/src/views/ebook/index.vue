@@ -1,19 +1,19 @@
 <template>
   <div class="ebook">
-    <router-link to="/"></router-link>
     <EbookReader />
   </div>
 </template>
 <script>
   import EbookReader from '@/components/ebook/EbookReader'
+  import EbookPanel from '@/components/ebook/EbookPanel'
   export default {
     data: () => {
       return {
-
       }
     },
     components: {
-      EbookReader
+      EbookReader,
+      EbookPanel
     },
   }
 </script>

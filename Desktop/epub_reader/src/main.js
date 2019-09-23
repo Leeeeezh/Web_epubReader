@@ -7,13 +7,19 @@ import './assets/fonts/daysOne.css'
 import './assets/fonts/cabin.css'
 import './assets/fonts/tangerine.css'
 import './assets/fonts/montserrat.css'
-import './assets/styles/global.scss'
+// import './assets/styles/global.scss'
 import './assets/styles/reset.css'
-import 'vant/lib/button/style';
+import 'vant/lib/button/style'
+import 'vant/lib/slider/style'
+import 'vant/lib/search/style'
 import {
-  Button
+  Button,
+  Slider,
+  Search 
 } from 'vant'
 Vue.use(Button)
+Vue.use(Slider)
+Vue.use(Search)
 Vue.config.productionTip = false
 
 new Vue({
