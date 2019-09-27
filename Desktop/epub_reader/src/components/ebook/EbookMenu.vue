@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-up">
-    <div class="menu-wrapper">
+    <div class="menu-wrapper" :class="activeTheme">
       <div class="icon-wrapper" @click="onSideMenuClick">
         <span class="icon-menu"></span>
       </div>
@@ -18,7 +18,12 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex';
+
   export default {
+    computed: {
+      ...mapGetters(['activeTheme'])
+    },
     methods: {
       onSideMenuClick(){
         console.log('side menu click')
@@ -42,6 +47,7 @@
 
 <style lang="scss" scoped>
   @import '../../assets/styles/global.scss';
+  @import '../../assets/styles/theme.scss';
 
   .menu-wrapper {
     position: fixed;
@@ -51,8 +57,8 @@
     height: $tab-bar-height;
     width: 100%;
     @include flex-row-between-center;
-    box-shadow: 0 0 px2rem(50) #aaa;
-    background-color: #eee;
+    // box-shadow: 0 0 px2rem(50) #aaa;
+    // background-color: #eee;
     font-size: px2rem(60);
   }
 
@@ -61,10 +67,6 @@
     width: $tab-bar-height;
     height: $tab-bar-height;
     @include flex-row-center-center;
-  }
-
-  .icon-wrapper:active {
-    background-color: #ddd;
   }
 
   .slide-up-enter,

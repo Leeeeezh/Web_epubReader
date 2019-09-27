@@ -1,7 +1,8 @@
 const book = {
   state: {
     fileName: '',
-    fontSize: 20
+    fontSize: 20,
+    activeTheme: 'default'
   },
   mutations: {
     'SET_FILENAME': (state, fileName) => {
@@ -9,6 +10,9 @@ const book = {
     },
     'SET_FONTSIZE': (state, fontSize) => {
       state.fontSize = fontSize
+    },
+    'SET_THEME': (state, activeTheme) => {
+      state.activeTheme = activeTheme
     }
   },
   actions: {
@@ -21,11 +25,17 @@ const book = {
       commit
     },fontSize) => {
       return commit('SET_FONTSIZE', fontSize)
+    },
+    setActiveTheme: ({
+      commit
+    },activeTheme) => {
+      return commit('SET_THEME', activeTheme)
     }
   },
   getters: {
     fileName: state => state.fileName,
-    fontSize: state => state.fontSize
+    fontSize: state => state.fontSize,
+    activeTheme: state => state.activeTheme,
   }
 }
 

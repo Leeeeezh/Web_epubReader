@@ -3,10 +3,13 @@
     <EbookTitle v-show="isTitleAndMenuShow" />
     <EbookMenu v-show="isTitleAndMenuShow" @progressclick="showProgressPanel" @fontclick="showFontSizePanel"
       @themeclick="showThemePanel" @sidemenuclick="showSideMenu" />
-    <EbookPanel v-show="isPanelShow" :title="activatedPanelTitle">
-      <EbookPanelFontFamily v-show="activatedPanelTitle=='字体'" slot="content" />
-      <EbookPanelFontSize v-show="activatedPanelTitle=='字号'" slot="content" @btnclick="showFontFamilyPanel" @fontsizechange="onFontSizeChange($event)"/>
-      <EbookPanelTheme v-show="activatedPanelTitle=='主题'" slot="content" />
+    <EbookPanel v-show="isPanelShow" :title="activatedPanelTitle" @panelclose="hidePanel">
+      <EbookPanelFontFamily :fontFamily="fontFamily" v-show="activatedPanelTitle=='字体'" slot="content"
+        @fontfamilychange="onFontFamilyChange($event)" />
+      <EbookPanelFontSize v-show="activatedPanelTitle=='字号'" slot="content" @btnclick="showFontFamilyPanel"
+        @fontsizechange="onFontSizeChange($event)" />
+      <EbookPanelTheme :theme="theme" v-show="activatedPanelTitle=='主题'" slot="content"
+        @themechange="onThemeChange($event)" />
       <EbookPanelProgress v-show="activatedPanelTitle=='阅读进度'" slot="content" />
     </EbookPanel>
     <EbookSideMenu v-show="isSideMenuShow" />
@@ -34,10 +37,40 @@
   export default {
     data: () => {
       return {
+        bookThemeList: [{
+            name: 'default',
+            style: {
+              body: {
+                'color': '#333',
+                'background': '#eee'
+              }
+            }
+          },
+          {
+            name: 'dark',
+            style: {
+              body: {
+                'color': '#888',
+                'background': '#111'
+              }
+            }
+          },
+          {
+            name: 'breeze',
+            style: {
+              body: {
+                'color': '#2f8166',
+                'background': '#a5d6a7'
+              }
+            }
+          },
+        ],
         isTitleAndMenuShow: false,
         isPanelShow: false,
         isSideMenuShow: false,
-        activatedPanelTitle: ''
+        activatedPanelTitle: '',
+        fontFamily: 'cabin',
+        theme: 'default'
       }
     },
     computed: {
@@ -54,11 +87,24 @@
       EbookSideMenu
     },
     methods: {
-      ...mapActions(['setFileName','setFontSize']),
-      onFontSizeChange(f){
+      ...mapActions(['setFileName', 'setFontSize', 'setActiveTheme']),
+      onFontFamilyChange(f) {
+        console.log('=======>', f)
+        this.fontFamily = f
+        this.rendition.themes.font(f)
+      },
+      onFontSizeChange(f) {
         this.rendition.themes.fontSize(`${f}px`)
         // this.setFontSize(f)
-        localStorage.setItem('fontSize',f)
+        localStorage.setItem('fontSize', f)
+      },
+      onThemeChange(t) {
+        console.log('should theme changed===>', t)
+        this.setTheme(t)
+      },
+      hidePanel() {
+        console.log('should panel close')
+        this.isPanelShow = false
       },
       hideSideMenu() {
         this.isSideMenuShow = false
@@ -102,6 +148,26 @@
         console.log('toggleTitleandMenu')
         this.isTitleAndMenuShow = !this.isTitleAndMenuShow
       },
+      regFontFamily() {
+        //  注册字体资源
+        this.rendition.hooks.content.register(contents => {
+          contents.addStylesheet(`${process.env.VUE_APP_RES_URL}fonts/daysOne.css`)
+          contents.addStylesheet(`${process.env.VUE_APP_RES_URL}fonts/cabin.css`)
+          contents.addStylesheet(`${process.env.VUE_APP_RES_URL}fonts/montserrat.css`)
+          contents.addStylesheet(`${process.env.VUE_APP_RES_URL}fonts/tangerine.css`)
+        })
+      },
+      regTheme() {
+        //  注册主题样式
+        this.bookThemeList.forEach(theme => {
+          this.rendition.themes.register(theme.name, theme.style)
+        })
+      },
+      setTheme(t) {
+        this.theme = t
+        this.rendition.themes.select(t)
+        this.setActiveTheme(t)
+      },
       initGesture() {
         this.rendition.on('touchstart', evt => {
 
@@ -127,14 +193,33 @@
           evt.stopPropagation()
         })
       },
-      initFontSize(){
+      initFontSize() {
         const fontSize = localStorage.getItem('fontSize')
-        if(!fontSize){
+        if (!fontSize) {
           localStorage.setItem('fontSize', 20)
         } else {
           this.setFontSize(+fontSize)
           this.rendition.themes.fontSize(fontSize + 'px')
-          this.fontSize = +fontSize
+          // this.fontSize = +fontSize
+        }
+      },
+      initFontFamily() {
+        const fontFamily = localStorage.getItem('fontFamily')
+        if (!fontFamily) {
+          localStorage.setItem('fontFamily', 'Cabin')
+        } else {
+          // this.setFontFamily(fontFamily)
+          this.fontFamily = fontFamily
+          this.rendition.themes.font(fontFamily)
+        }
+      },
+      initTheme() {
+        const theme = localStorage.getItem('theme')
+        if (!theme) {
+          localStorage.setItem('theme', 'default')
+        } else {
+          this.setTheme(theme)
+          this.theme = theme
         }
       },
       initEpub(url) {
@@ -146,12 +231,15 @@
         this.rendition.display()
         this.initGesture()
         this.initFontSize()
+        this.regFontFamily()
+        this.initFontFamily()
+        this.regTheme()
+        this.initTheme()
       },
-
     },
     mounted() {
       setTimeout(() => {
-        const baseUrl = 'http://127.0.0.1:8081/epub/'
+        const baseUrl = `${process.env.VUE_APP_RES_URL}epub/`
         const fileName = this.$route.params.fileName.split('|').join('/') + '.epub'
         this.setFileName(fileName)
         const url = baseUrl + fileName

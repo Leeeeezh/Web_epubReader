@@ -1,0 +1,70 @@
+.default {
+  color: #333;
+  background-color: #eee;
+
+  .themeOption {
+    box-shadow: 0 0 px2rem(20) #ccc;
+  }
+
+  .title {
+    border-bottom: 1px solid #ccc;
+  }
+
+  .icon-wrapper:active,.icon-close:active {
+    background-color: #ccc;
+  }
+
+  .active.item {
+    background-color: #ddd;
+    font-weight: bold;
+  }
+
+  .fontFamily.item:active {
+    background-color: #ddd;
+  }
+}
+
+.dark {
+  color: #888;
+  background-color: #111;
+  .title {
+    border-bottom: 1px solid #888;
+  }
+
+  .icon-wrapper:active,.icon-close:active {
+    background-color: #444;
+  }
+
+  .active.item {
+    background-color: #333;
+    font-weight: bold;
+  }
+
+  .fontFamily.item:active {
+    background-color: #333;
+  }
+}
+
+.breeze {
+  color: #2f8166;
+  background-color: #a5d6a7;
+  .title {
+    border-bottom: 1px solid #5ba78d;
+    .icon-close:active {
+      background-color: #83b484;
+    }
+  }
+
+  .icon-wrapper:active{
+    background-color: #83b484;
+  }
+
+  .item.active {
+    background-color: #83b484;
+    font-weight: bold;
+  }
+
+  .fontFamily.item:active {
+    background-color: #83b484;
+  }
+}

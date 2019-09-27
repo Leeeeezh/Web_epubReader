@@ -1,16 +1,30 @@
 <template>
   <transition name="slide-in">
-    <div class="sideMenu">
-      <van-search placeholder="请输入搜索关键词" v-model="keyword" clearable shape="round"/>
+    <div class="sideMenu" :class="activeTheme">
+      <van-search placeholder="请输入搜索关键词" v-model="keyword" clearable shape="round" :background="searchBgcolor"/>
     </div>
   </transition>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   export default {
     data(){
       return {
         keyword: ''
+      }
+    },
+    computed: {
+      ...mapGetters(['activeTheme']),
+      searchBgcolor(){
+        switch(this.activeTheme){
+          case 'default':
+            return '#ccc'
+          case 'dark':
+            return '#333'
+          case 'breeze':
+            return '#83b484'
+        }
       }
     }
   }
@@ -18,16 +32,15 @@
 
 <style lang="scss" scoped>
   @import '../../assets/styles/global.scss';
+  @import '../../assets/styles/theme.scss';
 
   .sideMenu {
     width: 80vw;
     height: 100vh;
-    box-shadow: 0 0 px2rem(20) #666;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 300;
-    background-color: #eee;
   }
 
   .slide-in-enter,

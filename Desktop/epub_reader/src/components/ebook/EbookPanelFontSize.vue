@@ -1,10 +1,18 @@
 <template>
-  <div class="fontSize">
+  <div class="fontSize" :class="activeTheme">
     <div class="current">{{fontSize}}</div>
     <div class="container">
       <span class="min preview">A</span>
-      <div class="slider">
-        <van-slider v-model="fontSize" :min="14" :max="30" :step="2" active-color="#333" @change="onFontSizeChange($event)"/>
+      <div class="sliderWrap">
+        <van-slider 
+        class="slider" 
+        v-model="fontSize" 
+        :min="14" 
+        :max="30" 
+        :step="2" 
+        :inactive-color="sliderBgcolor"
+        :active-color="sliderBgcolor"
+        @change="onFontSizeChange($event)"/>
       </div>
       <span class="max preview">A</span>
     </div>
@@ -12,10 +20,24 @@
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default {
     data() {
       return {
         fontSize: 20
+      }
+    },
+    computed: {
+      ...mapGetters(['activeTheme']),
+      sliderBgcolor(){
+        switch(this.activeTheme){
+          case 'default':
+            return '#ddd'
+          case 'dark':
+            return '#222'
+          case 'breeze':
+            return '#6cb89e'
+        }
       }
     },
     mounted(){
@@ -33,6 +55,7 @@
 </script>
 <style lang="scss" scoped>
   @import '../../assets/styles/global.scss';
+  @import '../../assets/styles/theme.scss';
 
   .fontSize {
     box-sizing: border-box;
@@ -60,17 +83,15 @@
       font-size: 30px;
     }
 
-    .slider {
+    .sliderWrap {
       flex: 1;
       padding: 0 px2rem(40);
     }
   }
 
   .btn {
+    font-size: px2rem(40);
     font-size: px2rem(18);
-    color: #666;
-    border: 1px solid #ccc;
-    border-radius: px2rem(14);
     padding: px2rem(10);
   }
 </style>
